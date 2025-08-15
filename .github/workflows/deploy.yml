@@ -10,7 +10,10 @@ jobs:
     steps:
       - name: Conectarse al servidor y hacer git pull
         run: |
-          ssh -o StrictHostKeyChecking=no alumno@137.184.127.11 "
+            echo "${{ secrets.SSH_KEY }}" > private_key.pem
+            chmod 600 private_key.pem
+            ssh -i private_key.pem -o StrictHostKeyChecking=no alumno@137.184.127.11 "
             cd ~/lemp-sites/m_lopez/testJs &&
             git pull origin main
-          "
+            "
+
