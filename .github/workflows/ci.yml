@@ -1,17 +1,19 @@
-name: CI - Pruebas JS
+name: CI - Pruebas Unitarias
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Instalar Node.js
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - name: Ejecutar tests
+      - name: Run Tests
         run: node math.test.js

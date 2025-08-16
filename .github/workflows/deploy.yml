@@ -1,24 +1,32 @@
-name: CD - Deploy con Git Pull
+name: CD - Deploy a Carpeta testJs
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Conectarse al servidor y hacer git pull
-        run: |
-          # Decodificar la clave privada desde Base64
-          echo "${{ secrets.SSH_KEY_B64 }}" | base64 --decode > private_key.pem
-          chmod 600 private_key.pem
+      - uses: actions/checkout@v4
 
-          # Conectarse al servidor y hacer git pull
-          ssh -i private_key.pem -o StrictHostKeyChecking=no alumno@137.184.127.11 "
-            cd ~/lemp-sites/m_lopez/testJs &&
-            git pull origin main
-          "
+      - name: Copiar archivos al servidor (testJs)
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}  # 137.184.127.11
+          username: ${{ secrets.SSH_USER }}  # alumno
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "*.js"                # Copia solo math.js y math.test.js
+          target: "~/lemp-sites/m_lopez/testJs/"
+          rm: true                      # Opcional: elimina archivos antiguos
 
-          # Limpiar la clave
-          rm private_key.pem
+      - name: Verificar despliegue
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/lemp-sites/m_lopez/testJs
+            ls -la                      # Verifica que los archivos llegaron
+            node math.test.js           # Ejecuta pruebas en el servidor
