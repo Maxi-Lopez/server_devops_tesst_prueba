@@ -21,5 +21,6 @@ function dividir(a, b) {
 module.exports = {
   suma,
   resta,
-  multiplicar
+  multiplicar,
+  dividir
 };
