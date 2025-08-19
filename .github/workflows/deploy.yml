@@ -1,4 +1,4 @@
-name: CD - Deploy a Carpeta testJs
+name: CD - Deploy a Carpeta testJs (SSH directo)
 
 on:
   push:
@@ -10,25 +10,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Copiar archivos al servidor
-        uses: appleboy/scp-action@v0.1.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "*.js"
-          target: "~/lemp-sites/m_lopez/testJs/"
-          rm: true
-          timeout: 30s
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Verificar archivos (sin Node.js)
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+      - name: Copiar archivos al servidor
+        run: |
+          scp -o StrictHostKeyChecking=no *.js ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/lemp-sites/m_lopez/testJs/
+
+      - name: Verificar archivos
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             cd ~/lemp-sites/m_lopez/testJs
             ls -la
-            echo "✅ Archivos copiados correctamente"
-            echo "ℹ️ Node.js no está instalado (no se ejecutarán pruebas)"
+            echo '✅ Archivos copiados correctamente'
+            echo 'ℹ️ Node.js no está instalado'
+          "
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
