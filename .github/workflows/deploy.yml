@@ -1,4 +1,4 @@
-name: CD - Deploy a Carpeta testJs (SSH directo)
+name: CD - Deploy a Carpeta testJs (SSH directo corregido)
 
 on:
   push:
@@ -13,20 +13,18 @@ jobs:
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "$SSH_KEY" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copiar archivos al servidor
-        run: |
-          scp -o StrictHostKeyChecking=no *.js ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/lemp-sites/m_lopez/testJs/
+      - name: Copiar archivos
+        run: scp -i ~/.ssh/id_rsa *.js ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/lemp-sites/m_lopez/testJs/
 
       - name: Verificar archivos
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             cd ~/lemp-sites/m_lopez/testJs
             ls -la
-            echo '✅ Archivos copiados correctamente'
-            echo 'ℹ️ Node.js no está instalado'
           "
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

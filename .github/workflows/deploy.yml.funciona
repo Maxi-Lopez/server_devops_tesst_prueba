@@ -1,0 +1,34 @@
+name: CD - Deploy a Carpeta testJs
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copiar archivos al servidor
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "*.js"
+          target: "~/lemp-sites/m_lopez/testJs/"
+          rm: true
+          timeout: 30s
+
+      - name: Verificar archivos (sin Node.js)
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/lemp-sites/m_lopez/testJs
+            ls -la
+            echo "✅ Archivos copiados correctamente"
+            echo "ℹ️ Node.js no está instalado (no se ejecutarán pruebas)"
