@@ -28,8 +28,20 @@ jobs:
 
       - name: Deploy - Git Pull en Servidor
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-            cd ~/lemp-sites/m_lopez/testJs
-            git pull origin main
-            echo 'Deploy completado exitosamente - Servidor actualizado'
-          "
+            ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            # Crea carpeta si no existe
+            mkdir -p ~/lemp-sites/m_lopez/testJs
+
+            # Verifica si es un repo git
+            if [ ! -d ~/lemp-sites/m_lopez/testJs/.git ]; then
+                echo 'Clonando repositorio por primera vez...'
+                cd ~/lemp-sites/m_lopez/testJs
+                git clone https://github.com/Maxi-Lopez/server_devops_tesst_prueba.git .
+            else
+                echo 'Haciendo git pull...'
+                cd ~/lemp-sites/m_lopez/testJs
+                git pull origin main
+            fi
+
+            echo 'Deploy completado exitosamente'
+            "
