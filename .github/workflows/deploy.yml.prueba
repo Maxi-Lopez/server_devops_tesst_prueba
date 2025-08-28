@@ -1,4 +1,4 @@
-name: CD - Deploy a Carpeta testJs
+name: CD - Deploy a Carpeta testJs (SSH directo corregido)
 
 on:
   push:
@@ -22,6 +22,12 @@ jobs:
       - name: Verificar archivos en servidor
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-            cd ~/lemp-sites/nombre de tu carpeta/testJs
+            cd ~/lemp-sites/m_lopez/testJs
             ls -la
           "
+tengo que agregar esto
+          ssh -tt -o StrictHostKeyChecking=no ***@***
+  shell: /usr/bin/bash -e {0}
+  env:
+    SSH_AUTH_SOCK: /tmp/ssh-H28Y8bpeFcJF/agent.1916
+    SSH_AGENT_PID: 1917
