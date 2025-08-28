@@ -1,0 +1,24 @@
+{
+  "name": "server_devops_test_prueba",
+  "version": "1.0.0",
+  "description": "",
+  "main": "math.js",
+  "scripts": {
+    "test": "node math.test.js"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maxi-Lopez/server_devops_tesst_prueba.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Maxi-Lopez/server_devops_tesst_prueba/issues"
+  },
+  "homepage": "https://github.com/Maxi-Lopez/server_devops_tesst_prueba#readme",
+  "devDependencies": {
+    "jest": "^30.1.1"
+  }
+}
