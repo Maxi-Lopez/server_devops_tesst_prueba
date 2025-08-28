@@ -22,6 +22,14 @@ jobs:
       - name: Verificar archivos en servidor
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-            cd ~/lemp-sites/nombre de tu carpeta/testJs
+            cd ~/lemp-sites/m_lopez/testJs
             ls -la
+          "
+
+      - name: Deploy - Git Pull en Servidor
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            cd ~/lemp-sites/m_lopez/testJs
+            git pull origin main
+            echo 'Deploy completado exitosamente - Servidor actualizado'
           "
