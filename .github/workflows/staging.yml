@@ -1,11 +1,11 @@
-name: CD - Deploy to Production
+name: CD - Deploy to Staging
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
 jobs:
-  deploy-production:
+  deploy-staging:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,12 +19,12 @@ jobs:
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Production
+      - name: Deploy to Staging
         run: |
           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-            echo 'Actualizando production (rama main)...'
-            cd ~/lemp-sites/m_lopez/production
-            git checkout main
-            git pull origin main
-            echo 'Production actualizado exitosamente'
+            echo 'Actualizando staging (rama develop)...'
+            cd ~/lemp-sites/m_lopez/staging
+            git checkout develop
+            git pull origin develop
+            echo 'Staging actualizado exitosamente'
           "
